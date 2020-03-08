@@ -1,51 +1,33 @@
-
-node('node1')
-
 node
-
 {
-
-  def mavenHome=tool name: "maven3.6.3"
-  
- stage('Checkout')
- {
- 	git branch: 'development', credentialsId: 'bed5a851-d84d-412e-87e7-bf9ce23c0e0e', url: 'https://github.com/MithunTechnologiesDevOps/maven-web-application.git'
- 
- }
-
- 
-
-
- /*
- stage('Build')
- {
- sh  "${mavenHome}/bin/mvn clean package"
- }
- 
- stage('ExecuteSoanrQubeReport')
- {
- sh  "${mavenHome}/bin/mvn sonar:sonar"
- }
- 
- stage('UploadArtifactintoNexus')
- {
- sh  "${mavenHome}/bin/mvn deploy"
- }
- 
- stage('DeployAppintoTomcat')
- {
- sshagent(['cd93d61f-2d0f-4c60-8b33-34cf4fa888b0']) {
-  sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@13.235.132.183:/opt/apache-tomcat-9.0.29/webapps/"
- }
- }
-*/
- stage('SendEmailNotification')
- {
- emailext body: '''Build is over..
-
- Regards,
- Mithun Technologies,
- 9980923226.''', subject: 'Build is over', to: 'devopstrainingblr@gmail.com'
- }
-
+    def mavenHome=tool name: "maven3.6.3"
+    stage('checkout')
+    {
+    git branch: 'development', credentialsId: 'ca047832-5650-4d70-af26-37ed10a2bc48', url: 'https://github.com/Madhu-Kart-org/maven-web-application.git'
+     }
+     
+     stage('build')
+    
+     {
+         sh "${mavenHome}/bin/mvn clean package"
+     }
+     
+     stage('SQreport')
+    
+     {
+         sh "${mavenHome}/bin/mvn clean sonar:sonar"
+     }
+     
+          stage('uploadArtifacts')
+    
+     {
+         sh "${mavenHome}/bin/mvn clean deploy"
+     }
+     
+     stage('tomcat')
+     {
+         sshagent(['2828b2ab-40ca-4c40-a93e-ec9baadbba9c']) {
+         sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@13.232.78.144:/opt/apache-tomcat-7.0.100/webapps/"
+         }
+     }
 }
